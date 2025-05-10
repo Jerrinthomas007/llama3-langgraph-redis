@@ -1,9 +1,10 @@
 langgraph 
 langchain 
-angchain_groq 
+langchain_groq 
 redis 
 qdrant-client 
 langchain_community 
 tiktoken 
 pydantic 
 huggingface_hub
+sentence-transformers
