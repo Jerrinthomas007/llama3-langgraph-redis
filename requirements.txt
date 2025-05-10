@@ -1,0 +1,9 @@
+langgraph 
+langchain 
+angchain_groq 
+redis 
+qdrant-client 
+langchain_community 
+tiktoken 
+pydantic 
+huggingface_hub
