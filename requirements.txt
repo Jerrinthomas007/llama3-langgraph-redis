@@ -8,3 +8,6 @@ tiktoken
 pydantic 
 huggingface_hub
 sentence-transformers
+fastapi
+uvicorn[standard]
+python-dotenv
