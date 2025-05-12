@@ -1,37 +1,60 @@
 import { useState } from 'react';
+import axios from 'axios';
 
-function ChatWindow() {
-  const [messages, setMessages] = useState([]);
+export default function Chat() {
   const [input, setInput] = useState('');
+  const [messages, setMessages] = useState([]);
+  const userId = 'user123'; // Replace with dynamic user ID if needed
 
-  const sendMessage = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    setMessages([...messages, { text: input, sender: 'user' }]);
-    setInput('');
+
+    const userMessage = { role: 'user', content: input };
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const res = await axios.post('http://127.0.0.1:8000/chat', {
+        user_id: userId,
+        message: input,
+      });
+
+      const botMessage = {
+        role: 'bot',
+        content: res.data.response,
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+      setInput('');
+    } catch (err) {
+      console.error('API error:', err);
+    }
   };
 
   return (
-    <div className="bg-white shadow-lg p-6 rounded-lg w-full max-w-md">
-      <h2 className="text-xl font-bold mb-4">Chat</h2>
-      <div className="h-64 overflow-y-auto border p-2 mb-4">
+    <div className="p-4 max-w-xl mx-auto">
+      <div className="h-96 overflow-y-auto border rounded-lg p-4 mb-4 bg-white shadow">
         {messages.map((msg, idx) => (
-          <div key={idx} className="mb-2">
-            <strong>{msg.sender}:</strong> {msg.text}
+          <div
+            key={idx}
+            className={`mb-2 text-sm ${
+              msg.role === 'user' ? 'text-blue-600' : 'text-green-600'
+            }`}
+          >
+            <strong>{msg.role === 'user' ? 'You' : 'Bot'}:</strong> {msg.content}
           </div>
         ))}
       </div>
-      <div className="flex gap-2">
+      <div className="flex">
         <input
           type="text"
+          className="flex-1 border rounded-l-lg p-2"
+          placeholder="Type a message..."
           value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && sendMessage()}
-          className="flex-1 p-2 border rounded"
-          placeholder="Type a message"
+          onChange={(e) => setInput(e.target.value)}
         />
         <button
-          onClick={sendMessage}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 text-white px-4 rounded-r-lg"
+          onClick={handleSend}
         >
           Send
         </button>
@@ -39,5 +62,3 @@ function ChatWindow() {
     </div>
   );
 }
-
-export default ChatWindow;
