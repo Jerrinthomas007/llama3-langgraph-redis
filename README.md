@@ -5,3 +5,5 @@ A scalable and production-ready chatbot using Groq's LLaMA3 for fast LLM inferen
 conda create -n llama3-redis-qdrant-chat python=3.10 -y
 
 conda activate llama3-redis-qdrant-chat
+
+uvicorn src.backend.main:app --reload
