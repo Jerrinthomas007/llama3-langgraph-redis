@@ -176,4 +176,4 @@ cython_debug/
 
 .env
 
-frontend\node_modules
+src/frontend/node_modules
