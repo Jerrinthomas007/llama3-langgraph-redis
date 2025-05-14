@@ -11,3 +11,8 @@ sentence-transformers
 fastapi
 uvicorn[standard]
 python-dotenv
+duckduckgo-search
+
+
+
+

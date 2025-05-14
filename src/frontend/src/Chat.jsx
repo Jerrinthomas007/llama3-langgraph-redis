@@ -11,15 +11,17 @@ export default function Chat() {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    let storedId = localStorage.getItem('chat_user_id');
+    // Retrieve user ID from sessionStorage, create a new one if it doesn't exist
+    let storedId = sessionStorage.getItem('chat_user_id');
     if (!storedId) {
-      storedId = uuidv4();
-      localStorage.setItem('chat_user_id', storedId);
+      storedId = uuidv4(); // Generate a new unique ID
+      sessionStorage.setItem('chat_user_id', storedId); // Store it in sessionStorage
     }
-    setUserId(storedId);
+    setUserId(storedId); // Set the user ID state
   }, []);
 
   useEffect(() => {
+    // Scroll to the end of the chat whenever a new message is added
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
@@ -115,3 +117,5 @@ export default function Chat() {
     </div>
   );
 }
+
+
