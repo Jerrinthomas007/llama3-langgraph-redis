@@ -1,7 +1,7 @@
 from typing import TypedDict
 from src.shared.types import ChatRequest, ChatResponse
 from src.backend.core.memory import redis_client
-from src.backend.tools.online_search import duckduckgo
+from src.backend.tools.online_search import duckduckgo_search,scrape_webpage
 from src.backend.tools.dnstoys import get_weather
 
 from langchain_groq import ChatGroq
@@ -35,6 +35,54 @@ User: {input}
 
 # LLM instance
 llm = ChatGroq(model="llama3-8b-8192")
+
+
+def query_generator(mssg):
+    query_prompt = f"""
+    You are not an AI assistant that responds to a user. You are an AI web search query generator model. 
+    You will be given a prompt to an AI assistant with web search capabilities. If you are being used, an 
+    AI has determined this prompt to the actual AI assistant, requires web search for more recent data. 
+    You must determine what the data is the assistant needs from search and generate the best possible 
+    DuckDuckGo query to find that data. Do not respond with anything but a query that an expert human 
+    search engine user would type into DuckDuckGo to find the needed data. Keep your queries simple, 
+    without any search engine code. Just type a query likely to retrieve the data we need.
+
+    prompt : {mssg}
+    """.strip()
+    query = llm.invoke(query_prompt).content.strip().lower()
+    if query[0]=='"':
+        query=query[1:-1]
+    return query
+
+def best_search_result(search_results,user_message,query):
+    query_prompt = f"""
+    You are not an AI assistant that responds to a user. You are an AI model trained to select the best '
+    'search result out of a list of ten results. The best search result is the link an expert human search '
+    'engine user would click first to find the data to respond to a USER_PROMPT after searching DuckDuckGo '
+    'for the SEARCH_QUERY. \nAll user messages you receive in this conversation will have the format of: \n'
+    '  SEARCH_RESULTS: [] \n'
+    '  USER_PROMPT: "this will be an actual prompt to a web search enabled AI assistant" \n'
+    '  SEARCH_QUERY: "search query ran to get the above 10 links" \n\n'
+    'You must select the index from the 0 indexed SEARCH_RESULTS list and only respond with the index of '
+    'the best search result to check for the data the AI assistant needs to respond. That means your responses '
+    'to this conversation should always be 1 token, being an integer between 0–9.'
+
+    the SEARCH_RESULTS : {search_results},
+    the  USER_PROMPT : {user_message},
+    the  SEARCH_QUERY: {query}
+    """.strip()
+
+    for _ in range(2):
+        try:
+            best_result = llm.invoke(query_prompt).content.strip().lower()
+            return int(best_result)
+        except:
+            continue
+    
+    return 0
+
+
+
 
 # Step 1: Load history
 def load_history(state: ChatState) -> ChatState:
@@ -71,7 +119,13 @@ def online_search_tool(state: ChatState) -> ChatState:
             weather = get_weather(city)
             return {**state, "search_result": f"Weather in {city}:\n{weather}"}
     # fallback to general search
-    result = duckduckgo(state["input"])
+
+    query = query_generator(state["input"])
+    search_results = duckduckgo_search(query)
+    bs_results = best_search_result(search_results,state["input"],query)
+    result = scrape_webpage(search_results[bs_results]['link'])
+    if result == None:
+        result = search_results[bs_results]['search_description']
     return {**state, "search_result": result}
 
 # Step 5: Generate response

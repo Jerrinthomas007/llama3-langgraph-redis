@@ -13,6 +13,9 @@ uvicorn[standard]
 python-dotenv
 duckduckgo-search
 dnspython
+trafilatura
+requests
+beautifulsoup4
 
 
 
