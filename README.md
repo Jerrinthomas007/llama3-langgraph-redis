@@ -1,4 +1,4 @@
-# 🧠 llama3-redis-qdrant-chat
+# 🧠 llama3-redis-chat
 
 A **production-ready, scalable AI chatbot** that uses:
 
