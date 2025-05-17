@@ -101,16 +101,6 @@ npm run dev
 
 ---
 
-## 📦 Dependencies
-
-- `requests`
-- `beautifulsoup4`
-- `trafilatura`
-- `redis`
-- `langgraph`
-- `langchain-groq`
-
----
 
 ## 🔧 Environment Setup
 
@@ -122,14 +112,6 @@ GROQ_API_KEY=your_groq_api_key
 
 ---
 
-## 🛠️ Future Plans
-
-- [ ] Qdrant vector DB integration for persistent memory
-- [ ] Multi-user login + session handling
-- [ ] Dockerized deployment
-- [ ] LangSmith or OpenTelemetry tracing
-
----
 
 ## 🤝 Contributing
 
