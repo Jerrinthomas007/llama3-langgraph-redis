@@ -15,7 +15,7 @@ A **production-ready, scalable AI chatbot** that uses:
 - 🔁 Real-time chat history using Redis
 - 🌍 Online search using custom HTML scraping from DuckDuckGo
 - 📄 Webpage content extraction using `trafilatura`
-- 🌦️ Live weather support via DNS Toys
+- 🌦️ Live weather support via [DNS Toys](https://www.dns.toys/)
 - 🧠 LLM-powered reasoning to decide between online search or direct response
 - ✨ Extensible LangGraph architecture for multi-step chains
 - 💬 Responsive frontend running on Vite (port `5173`)
