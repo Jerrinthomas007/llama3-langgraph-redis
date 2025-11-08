@@ -121,4 +121,4 @@ Got improvements or ideas? PRs and issues are welcome!
 
 ## 📜 License
 
-MIT © [Jerrin Thomas](https://github.com/yourusername)
+MIT © [Jerrin Thomas](https://github.com/Jerrinthomas007)
